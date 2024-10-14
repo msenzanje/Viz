@@ -1,8 +1,8 @@
+import math
 from ultralytics import YOLO
 import random
 import cv2
 import numpy as np
-from datetime import datetime
 
 imgpath = "image1.jpg"
 
@@ -20,10 +20,23 @@ print(results)
 
 for result in results:
     for mask, box in zip(result.masks.xy, result.boxes):
+        x1, y1, x2, y2 = box.xyxy[0]
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+
         points = np.int32([mask])
-        # cv2.polylines(img, points, True, (255, 0, 0), 1)
         color_number = classes_ids.index(int(box.cls[0]))
-        cv2.fillPoly(img, points, colors[color_number])
+
+        cv2.polylines(img, points, True, colors[color_number], 5)
+
+        org = [x1, y1]
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        fontScale = .5
+        color = (255, 255, 0)
+        thickness = 2
+
+        cls = int(box.cls[0])
+
+        cv2.putText(img, yolo_classes[cls], org, font, fontScale, color, thickness)
 
 cv2.imshow("Image", img)
 cv2.waitKey(0)
