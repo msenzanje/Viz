@@ -7,14 +7,14 @@ cap.set(3, 640)
 cap.set(4, 480)
 
 # model and classes
-model = YOLO("yolov8m-seg.pt")
+model = YOLO("best_colab_model.pt")
 yolo_classes = list(model.names.values())
 classes_ids = [yolo_classes.index(clas) for clas in yolo_classes]
 
 
 while True:
     success, img = cap.read()
-    results = model(source=0, show=True, conf=.5)
+    results = model(source=0, show=True, conf=.3)
     print(results)
 
     cv2.imshow('Webcam', img)
