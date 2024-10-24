@@ -1,6 +1,22 @@
 from ultralytics import YOLO
 import cv2
 import math 
+import pyttsx3
+import threading
+
+# Initialize the TTS engine
+engine = pyttsx3.init()
+
+# Set properties before adding text
+engine.setProperty('rate', 150)    # Speed of speech
+engine.setProperty('volume', 1.0)  # Volume level (0.0 to 1.0)
+
+# Function to handle speech asynchronously
+def say_object(object_name):
+    engine.say(object_name)
+    engine.runAndWait()
+
+
 # start webcam
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)
@@ -22,7 +38,7 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "teddy bear", "hair drier", "toothbrush"
               ]
 
-
+newName = ""
 while True:
     success, img = cap.read()
     results = model(img, stream=True)
@@ -46,6 +62,16 @@ while True:
             # class name
             cls = int(box.cls[0])
             print("Class name -->", classNames[cls])
+            # Say something
+            
+            if newName != classNames[cls]:
+                threading.Thread(target=say_object, args=(classNames[cls],)).start()
+                
+
+
+            newName = classNames[cls]
+            # Wait for the speech to finish
+            
 
             # object details
             org = [x1, y1]
@@ -55,10 +81,15 @@ while True:
             thickness = 2
 
             cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
+            
+            
 
+   
     cv2.imshow('Webcam', img)
     if cv2.waitKey(1) == ord('q'):
         break
+
+
 
 cap.release()
 cv2.destroyAllWindows()
