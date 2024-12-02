@@ -2,7 +2,6 @@ from ultralytics import YOLO
 import cv2
 import math 
 import pyttsx3
-import time
 
 # start webcam
 cap = cv2.VideoCapture(0)
@@ -33,19 +32,10 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               ]
 
 
-
-
-
-
-
-
-
-
-
 while True:
     
     success, img = cap.read()
-    results = model(img, stream=True)
+    results = model(img, stream=True, verbose=False)
     #left zone
     cv2.rectangle(img, (100,200), (320,400) , (255, 0 , 0),3, 1)
     #right zone
@@ -67,23 +57,9 @@ while True:
                 if x1 > 320 and x2 < 540 and y1 > 200 and y2 < 400:
                     # put box in cam
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
-                    # confidence
-                    
-                    print("Confidence --->",confidence)
-                    # class name
-                    cls = int(box.cls[0])
-                    print("Class name -->", classNames[cls])
-                    # object details
-                    org = [x1, y1]
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    fontScale = 1
-                    color = (255, 0, 0)
-                    thickness = 2
-                    cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
                     words = "In right zone , Move left"
                     # Say something
                     engine.say(words)
-                    time.sleep(1)
                     # Wait for the speech to finish
                     engine.runAndWait()
                     
@@ -92,23 +68,9 @@ while True:
                 elif x1 > 100 and x2 < 320 and y1 > 200 and y2 < 400:
                     # put box in camq
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
-                    # confidence
-                    
-                    print("Confidence --->",confidence)
-                    # class name
-                    cls = int(box.cls[0])
-                    print("Class name -->", classNames[cls])
-                    # object details
-                    org = [x1, y1]
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    fontScale = 1
-                    color = (255, 0, 0)
-                    thickness = 2
-                    cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
                     words = "In left zone , Move right"
                     # Say something
                     engine.say(words)
-                    time.sleep(1)
                     # Wait for the speech to finish
                     engine.runAndWait()
 
@@ -116,23 +78,9 @@ while True:
                 elif x1 < 100 and x2 > 540 and y2 > 400:
                     # put box in cam
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
-                    # confidence
-                    
-                    print("Confidence --->",confidence)
-                    # class name
-                    cls = int(box.cls[0])
-                    print("Class name -->", classNames[cls])
-                    # object details
-                    org = [x1, y1]
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    fontScale = 1
-                    color = (255, 0, 0)
-                    thickness = 2
-                    cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
                     words = "covering camera , Back up"
                     # Say something
                     engine.say(words)
-                    time.sleep(1)
                     # Wait for the speech to finish
                     engine.runAndWait()
 
