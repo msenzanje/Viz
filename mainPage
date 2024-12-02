@@ -29,8 +29,15 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
 
 
 while True:
+    
     success, img = cap.read()
     results = model(img, stream=True)
+    #left zone
+    cv2.rectangle(img, (100,200), (320,400) , (255, 0 , 0),3, 1)
+    #right zone
+    cv2.rectangle(img, (320, 200), (540,400), (255, 0 , 0),3, 1)
+
+
 
     # coordinates
     for r in results:
@@ -41,25 +48,56 @@ while True:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # convert to int values
 
-            # put box in cam
-            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+            if x1 > 320 and x2 < 540 and y1 > 200 and y2 < 400:
+                # put box in cam
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
+                # confidence
+                confidence = math.ceil((box.conf[0]*100))/100
+                print("Confidence --->",confidence)
+                # class name
+                cls = int(box.cls[0])
+                print("Class name -->", classNames[cls])
+                # object details
+                org = [x1, y1]
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                fontScale = 1
+                color = (255, 0, 0)
+                thickness = 2
+                cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
+                
+            elif x1 > 100 and x2 < 320 and y1 > 200 and y2 < 400:
+                # put box in cam
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
+                # confidence
+                confidence = math.ceil((box.conf[0]*100))/100
+                print("Confidence --->",confidence)
+                # class name
+                cls = int(box.cls[0])
+                print("Class name -->", classNames[cls])
+                # object details
+                org = [x1, y1]
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                fontScale = 1
+                color = (255, 0, 0)
+                thickness = 2
+                cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
+            elif x1 < 100 and x2 > 540 and y2 > 400:
+                # put box in cam
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
+                # confidence
+                confidence = math.ceil((box.conf[0]*100))/100
+                print("Confidence --->",confidence)
+                # class name
+                cls = int(box.cls[0])
+                print("Class name -->", classNames[cls])
+                # object details
+                org = [x1, y1]
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                fontScale = 1
+                color = (255, 0, 0)
+                thickness = 2
+                cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
 
-            # confidence
-            confidence = math.ceil((box.conf[0]*100))/100
-            print("Confidence --->",confidence)
-
-            # class name
-            cls = int(box.cls[0])
-            print("Class name -->", classNames[cls])
-
-            # object details
-            org = [x1, y1]
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 1
-            color = (255, 0, 0)
-            thickness = 2
-
-            cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
 
     cv2.imshow('Webcam', img)
     if cv2.waitKey(1) == ord('q'):
