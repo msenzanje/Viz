@@ -26,7 +26,7 @@ classNames = ["person", "bicycle", "car", "motorbike", "bus", "train", "truck", 
               ]
 
 # Confidence threshold
-CONF = 0.5
+CONF = 0.8
 
 # Main loop that processes frames until told to quit
 while True:
