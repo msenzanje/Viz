@@ -13,7 +13,7 @@ cap.set(4, 480)
 engine = pyttsx3.init()
 
 # model
-model = YOLO("yolo-Weights/yolov8n.pt")
+model = YOLO("yolo-Weights/session1/best.pt")
 
 # object classes
 classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
@@ -25,7 +25,7 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
               "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
               "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"
+              "teddy bear", "hair drier", "toothbrush", "Automobile", "Obstacle", "Person", "Road", "Sidewalk"
               ]
 
 # Define a function to handle TTS
