@@ -3,6 +3,7 @@ import cv2
 import math 
 import pyttsx3
 import threading
+import queue
 
 # start webcam
 cap = cv2.VideoCapture(0)
@@ -13,7 +14,9 @@ cap.set(4, 480)
 engine = pyttsx3.init()
 
 # model
-model = YOLO("yolo-Weights/session1/best.pt")
+model = YOLO("yolo-Weights/yolov8n.pt")
+
+
 
 # object classes
 classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
@@ -48,9 +51,10 @@ while True:
     success, img = cap.read()
     results = model(img, stream=True, verbose=False)
     #left zone
-    cv2.rectangle(img, (100,200), (320,400) , (255, 0 , 0),3, 1)
+    cv2.rectangle(img, (0,250), (320,480) , (255, 0 , 0),3, 1)
     #right zone
-    cv2.rectangle(img, (320, 200), (540,400), (255, 0 , 0),3, 1)
+    cv2.rectangle(img, (320, 250), (640,480), (255, 0 , 0),3, 1)
+    
 
 
 
@@ -63,33 +67,64 @@ while True:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # convert to int values
             confidence = math.ceil((box.conf[0]*100))/100
+            # class name
+            cls = int(box.cls[0])
+            class_name = classNames[cls]
 
-            if confidence >= 0.6:
-                if x1 > 320 and x2 < 540 and y1 > 200 and y2 < 400:
+            
+            if confidence >= 0.65:
+
+                #right zone detection
+                if (x1 > 320 and x2 < 640) and (y1 > 250 and y2 > 250) and class_name != "Sidewalk":
                     # put box in cam
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "In right zone , Move left"
                     # Say something
                     speak_async(words)
+                    # object details
+                    org = [x1, y1]
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    fontScale = 1
+                    color = (255, 0, 0)
+                    thickness = 2
+                    cv2.putText(img, class_name, org, font, fontScale, color, thickness)
         
                     
 
-                    
-                elif x1 > 100 and x2 < 320 and y1 > 200 and y2 < 400:
+                #left zone detection
+                elif (x1 > 100 and x2 < 320) and (y1 > 250 and y2 > 250) and class_name != "Sidewalk":
                     # put box in camq
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "In left zone , Move right"
                     # Say something
                     speak_async(words)
+                    # object details
+                    org = [x1, y1]
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    fontScale = 1
+                    color = (255, 0, 0)
+                    thickness = 2
+                    cv2.putText(img, class_name, org, font, fontScale, color, thickness)
                     
 
-
-                elif x1 < 100 and x2 > 540 and y2 > 400:
+                #Bigger than zone detection
+                elif (x1 >= 1 and x2 <= 640) and (y1 < 250) and class_name != "Sidewalk":
                     # put box in cam
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "covering camera , Back up"
                     # Say something
                     speak_async(words)
+                    # object details
+                    org = [x1, y1]
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    fontScale = 1
+                    color = (255, 0, 0)
+                    thickness = 2
+                    cv2.putText(img, class_name, org, font, fontScale, color, thickness)
+                
+               
+
+                
                     
 
 
