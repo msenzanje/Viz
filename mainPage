@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import cv2
 import math 
 import pyttsx3
+import threading
 
 # start webcam
 cap = cv2.VideoCapture(0)
@@ -10,10 +11,6 @@ cap.set(4, 480)
 
 # Initialize the TTS engine
 engine = pyttsx3.init()
-
-# Set properties before adding text
-engine.setProperty('rate', 150)    # Speed of speech
-engine.setProperty('volume', 1.0)  # Volume level (0.0 to 1.0)
 
 # model
 model = YOLO("yolo-Weights/yolov8n.pt")
@@ -30,6 +27,20 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
               "teddy bear", "hair drier", "toothbrush"
               ]
+
+# Define a function to handle TTS
+def speak_async(text):
+
+    def run_tts():
+        engine = pyttsx3.init()  # Create a new instance of the TTS engine
+        engine.setProperty('rate', 150)
+        engine.setProperty('volume', 1.0)
+        engine.say(text)
+        engine.runAndWait()
+
+    # Run TTS in a background thread
+    tts_thread = threading.Thread(target=run_tts)
+    tts_thread.start()
 
 
 while True:
@@ -59,9 +70,8 @@ while True:
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "In right zone , Move left"
                     # Say something
-                    engine.say(words)
-                    # Wait for the speech to finish
-                    engine.runAndWait()
+                    speak_async(words)
+        
                     
 
                     
@@ -70,9 +80,8 @@ while True:
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "In left zone , Move right"
                     # Say something
-                    engine.say(words)
-                    # Wait for the speech to finish
-                    engine.runAndWait()
+                    speak_async(words)
+                    
 
 
                 elif x1 < 100 and x2 > 540 and y2 > 400:
@@ -80,14 +89,15 @@ while True:
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
                     words = "covering camera , Back up"
                     # Say something
-                    engine.say(words)
-                    # Wait for the speech to finish
-                    engine.runAndWait()
+                    speak_async(words)
+                    
 
 
     cv2.imshow('Webcam', img)
     if cv2.waitKey(1) == ord('q'):
         break
+
+
 
 cap.release()
 cv2.destroyAllWindows()
