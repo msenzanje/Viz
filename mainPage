@@ -106,7 +106,7 @@ while True:
                     thickness = 2
                     cv2.putText(img, class_name, org, font, fontScale, color, thickness)
                     
-
+                '''
                 #Bigger than zone detection
                 elif (x1 >= 1 and x2 <= 640) and (y1 < 250) and class_name != "Sidewalk":
                     # put box in cam
@@ -121,7 +121,7 @@ while True:
                     color = (255, 0, 0)
                     thickness = 2
                     cv2.putText(img, class_name, org, font, fontScale, color, thickness)
-                
+                '''
                
 
                 
