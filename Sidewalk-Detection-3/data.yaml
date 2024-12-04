@@ -1,0 +1,16 @@
+names:
+- Automobile
+- Obstacle
+- Person
+- Road
+- Sidewalk
+nc: 5
+roboflow:
+  license: CC BY 4.0
+  project: sidewalk-detection-d54fs
+  url: https://universe.roboflow.com/viz-kxwrm/sidewalk-detection-d54fs/dataset/3
+  version: 3
+  workspace: viz-kxwrm
+test: ../test/images
+train: ../train/images
+val: ../valid/images

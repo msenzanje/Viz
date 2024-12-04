@@ -9,11 +9,23 @@ from IPython.display import display, Image
 # Fine-tuned YOLOv8 model
 model = YOLO("Augmented-Weights\\Session2\\best.pt")
 
-# Importing custom dataset from Roboflow
+# Importing Roboflow workspace
 rf = Roboflow(api_key="UvVDJZVkAv5VXOa0jzUL")
 project = rf.workspace("viz-kxwrm").project("sidewalk-detection-d54fs")
+
+# Dowloading campus-specific dataset
 version = project.version(11)
 dataset = version.download("yolov8")
 
 # Runs model in prediction mode and saves result in cwd
-results = model.predict(source="prediction_images", conf=.5, save=True)
+model.predict(source=f"{dataset.location}/test/images", conf=.8, save=True)
+
+# Downloading third-party dataset
+version = project.version(3)
+dataset = version.download("yolov8")
+
+# Runs model in prediction mode and saves result in cwd
+model.predict(source=f"{dataset.location}/test/images", conf=.8, save=True)
+
+# Runs model in prediction mode on new/random collection of images outside of either dataset
+model.predict(source="prediction_images", conf=.8, save=True)
