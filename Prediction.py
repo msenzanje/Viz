@@ -29,3 +29,6 @@ model.predict(source=f"{dataset.location}/test/images", conf=.8, save=True)
 
 # Runs model in prediction mode on new/random collection of images outside of either dataset
 model.predict(source="prediction_images", conf=.8, save=True)
+
+# Runs model in prediciton mode on pre-recorded video
+model.predict(source="prediction_videos", conf=.8, save=True)
