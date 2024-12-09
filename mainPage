@@ -16,27 +16,27 @@ engine = pyttsx3.init()
 # model
 model = YOLO("yolo-Weights/session2/best.pt")
 
-
-
 # object classes
 classNames = ["Automobile", "Obstacle", "Person", "Road", "Sidewalk"]
 
 # Define a function to handle TTS
+# Function to handle TTS
 def speak_async(text):
-
     def run_tts():
-        #tts engine properties
-        engine = pyttsx3.init()  # Create a new instance of the TTS engine
-        engine.setProperty('rate', 150)
-        engine.setProperty('volume', 1.0)
-        engine.say(text)
-        engine.runAndWait()
+        try:
+            engine.say(text)
+            engine.runAndWait()
+        except RuntimeError as e:
+            # Suppress "run loop already started" error
+            if "run loop already started" in str(e):
+                pass
+            else:
+                raise
 
     # Run TTS in a background thread
     # for optimization
     tts_thread = threading.Thread(target=run_tts)
     tts_thread.start()
-
 
 while True:
     
@@ -47,9 +47,6 @@ while True:
     #right zone - for visual only
     cv2.rectangle(img, (320, 250), (640,480), (255, 0 , 0),3, 1)
     
-
-
-
     # coordinates
     for r in results:
         boxes = r.boxes
@@ -80,8 +77,6 @@ while True:
                     thickness = 2
                     cv2.putText(img, class_name, org, font, fontScale, color, thickness)
         
-                    
-
                 #left zone detection
                 elif (x1 > 100 and x2 < 320) and (y1 > 250 and y2 > 250) and class_name != "Sidewalk":
                     # put box in camq
@@ -96,25 +91,7 @@ while True:
                     color = (255, 0, 0)
                     thickness = 2
                     cv2.putText(img, class_name, org, font, fontScale, color, thickness)
-                    
-                '''
-                #Bigger than zone detection
-                elif (x1 >= 1 and x2 <= 640) and (y1 < 250) and class_name != "Sidewalk":
-                    # put box in cam
-                    cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 2)
-                    words = "covering camera , Back up"
-                    # Say something
-                    speak_async(words)
-                    # object details
-                    org = [x1, y1]
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    fontScale = 1
-                    color = (255, 0, 0)
-                    thickness = 2
-                    cv2.putText(img, class_name, org, font, fontScale, color, thickness)
-                '''
-               
-
+            
     #display cam
     cv2.imshow('Webcam', img)
     #kill button is q
